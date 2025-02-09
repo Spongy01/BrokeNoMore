@@ -6,6 +6,8 @@ from langchain.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 load_dotenv()
+from google.generativeai import GenerativeModel
+
 
 
 app = Flask(__name__)
@@ -80,9 +82,11 @@ def query():
         classification = "financial education"
         
         if classification == "stock market":
-            response = invest(user_id, question)
+            # response = invest(user_id, question)
+            print("In Stock Market")
         elif classification == "personal budgeting":
-            response = personal_budgeting(user_id, question)
+            # response = personal_budgeting(user_id, question)
+            print("In Personal Budgeting")
         elif classification == "financial education":
             response = financial_education(user_id, question)
         else:
