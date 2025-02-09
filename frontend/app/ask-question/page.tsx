@@ -35,16 +35,34 @@ export default function AskQuestion() {
 
     try {
       // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      const botResponse: Message = {
-        role: "bot",
-        content: `Here's a response for user ${userId}: ${inputMessage}`,
+      const response = await fetch("http://127.0.0.1:5000/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          conversation: [...messages, newMessage],  // Send entire conversation history
+        }),
+      });
+
+      const data = await response.json();
+      if(response.ok){
+        const botResponse: Message = {
+          role: "bot",
+          content: data.response || "Sorry, I couldn't generate a response.",
+        };
+        setMessages((prevMessages) => [...prevMessages, botResponse]);
       }
-      setMessages((prevMessages) => [...prevMessages, botResponse])
-    } catch (error) {
-      toast.error("An error occurred. Please try again.")
+      else{
+        toast.error(data.error || "An error occurred. Please try again.");
+      }
+
+    }
+    catch (error) {
+      toast.error("An error occurred. Please try again.");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   }
 

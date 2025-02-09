@@ -6,7 +6,7 @@ from langchain.vectorstores import FAISS
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from dotenv import load_dotenv
 load_dotenv()
-from google.generativeai import GenerativeModel
+import google.generativeai as genai
 
 
 
@@ -18,6 +18,7 @@ if not API_KEY:
     raise ValueError("GOOGLE_API_KEY not found in .env file")
 
 embed = GoogleGenerativeAIEmbeddings(google_api_key=API_KEY, model="models/embedding-001")
+genai.configure(api_key=API_KEY)
 
 USER_DATA_FILE = "user_data.txt"
 folder_name = "store"
@@ -68,17 +69,34 @@ def update_user():
         return jsonify({"error": str(e)}), 500
 
 
+# CORS(app)
 @app.route('/query', methods=['POST'])
 def query():
     try:
-        user_id = request.form.get('user_id')
+        print("Here inside main")
+        data = request.get_json()
+        user_id = data['user_id']
         if user_id is None:
             return jsonify({'error': 'user_id is required'}), 400
 
-        question = request.form.get('question')
-        if question is None:
+        conversation = data['conversation']
+        if conversation is None:
             return jsonify({'error': 'question is required'}), 400
+        
+        system_message = {
+            "role": "system",
+            "content": (
+                "You are a highly skilled financial advisor. You have expertise in explaining "
+                "financial concepts clearly and concisely. Your role is to assist the user based "
+                "on the context of the previous messages. Always make sure your responses are "
+                "accurate, helpful, and based on the context of the conversation. "
+                "Respond to the last user message considering the context provided above."
+            )
+        }
+        messages = [system_message] + [{"role": message['role'], "content": message['content']} for message in conversation]
 
+
+        print("Fetvched Questions successfully")
         classification = "financial education"
         
         if classification == "stock market":
@@ -88,7 +106,8 @@ def query():
             # response = personal_budgeting(user_id, question)
             print("In Personal Budgeting")
         elif classification == "financial education":
-            response = financial_education(user_id, question)
+            print("In Financial Education")
+            response = financial_education(user_id, messages)
         else:
             return jsonify({'error': 'Invalid classification'})
 
@@ -103,14 +122,16 @@ def query():
 
 def financial_education(user_id, question):
     try:
-        prompt = f"Given this message explain in a simple and understandable way: {question}"
-
-        model = GenerativeModel(api_key=API_KEY, model_name="gemini-pro")
+        prompt = f"{question}"
+        print("Setting up a model")
+        print("Question : ", prompt)
+        model = genai.GenerativeModel("gemini-1.5-flash-002")
+        print('Model:', model)
         response = model.generate_content(prompt)
 
         if response and response.text:
             generated_text = response.text
-            return {'question': question, 'message': generated_text}
+            return {'question': question, 'message': generated_text, 'status_code': 200}
         else:
             return {'error': 'No response from the model', 'status_code': 500}
 
