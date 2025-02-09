@@ -24,6 +24,26 @@ USER_DATA_FILE = "user_data.txt"
 folder_name = "store"
 CORS(app)
 
+@app.route('/get_transactions', methods=['GET'])
+def get_transactions():
+    try:
+        user_id = request.args.get('user_id')
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+        user_folder = os.path.join(folder_name, user_id)
+        file_path = os.path.join(user_folder, USER_DATA_FILE)
+        if not os.path.exists(file_path):
+            return jsonify({'transactions': []})  # No transactions found
+        transactions = []
+        with open(file_path, "r") as f:
+            for line in f:
+                transactions.append(eval(line.strip()))  # Convert string to dictionary
+        return jsonify({'transactions': transactions}), 200
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/update_user', methods=['POST'])
 def update_user():
     try:
