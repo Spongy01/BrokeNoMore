@@ -43,18 +43,36 @@ export default function UpdateTransaction() {
   const watchType = watch("type")
 
   const onSubmit: SubmitHandler<FormInputs> = async (data) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      toast.success("Transaction updated successfully!")
-      reset()
+        const response = await fetch("http://127.0.0.1:5000/update_user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                user_id: data.user_id,
+                amount: data.amount,
+                transaction_type: data.type,
+                category: data.category,
+                description: data.description,
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            toast.success(result.message || "Transaction updated successfully!");
+            reset();
+        } else {
+            toast.error(result.error || "An error occurred. Please try again.");
+        }
     } catch (error) {
-      toast.error("An error occurred. Please try again.")
+        toast.error("Failed to connect to the server.");
     } finally {
-      setIsLoading(false)
+        setIsLoading(false);
     }
-  }
+};
 
   return (
     <div className="max-w-2xl mx-auto">
