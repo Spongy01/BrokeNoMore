@@ -30,6 +30,7 @@ class TransactionResponse(TransactionCreate):
 class QueryRequest(BaseModel):
     user_id: str
     message: str
+    history: list[dict] = []
 
 
 class QueryResponse(BaseModel):
