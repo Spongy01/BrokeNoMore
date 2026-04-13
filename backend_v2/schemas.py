@@ -35,3 +35,4 @@ class QueryRequest(BaseModel):
 
 class QueryResponse(BaseModel):
     response: str
+    history: list[dict]
