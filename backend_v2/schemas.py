@@ -11,6 +11,7 @@ class TransactionCreate(BaseModel):
     category: str
     description: str
     date: date
+    source: str | None = None  # "Chase Checking", "Discover Credit", or None
 
     @field_validator("transaction_type")
     @classmethod

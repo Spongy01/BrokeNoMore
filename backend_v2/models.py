@@ -15,6 +15,7 @@ class Transaction(Base):
     description = Column(Text, nullable=False)
     date = Column(Date, nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    source = Column(String(64), nullable=True)  # "Chase Checking", "Discover Credit", or None
 
     __table_args__ = (
         Index("ix_transactions_user_id", "user_id"),
