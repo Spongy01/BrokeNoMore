@@ -4,3 +4,4 @@ store
 CLAUDE.md
 .venv
 MIGRATION.md
+backend_v2/.env
