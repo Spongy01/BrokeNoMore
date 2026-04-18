@@ -16,10 +16,23 @@ class GeminiProvider(BaseLLMProvider):
         normalized = []
         for message in history:
             role = message["role"]
-            content = message["content"]
+            content = message.get("content")
 
             if role == "user":
                 normalized.append(t.Content(role="user", parts=[t.Part(text=content)]))
+
+            elif role == "assistant" and "tool_call" in message:
+                normalized.append(t.Content(
+                    role="model",
+                    parts=[
+                        t.Part(
+                            function_call=t.FunctionCall(
+                                name=message["tool_call"]["name"],
+                                args=message["tool_call"]["args"],
+                            )
+                        )
+                    ],
+                ))
 
             elif role == "assistant":
                 normalized.append(t.Content(role="model", parts=[t.Part(text=content)]))
@@ -64,7 +77,7 @@ class GeminiProvider(BaseLLMProvider):
             tools=normalized_tools,
         )
 
-        response = self._client.models.generate_content(
+        response = await self._client.aio.models.generate_content(
             model="gemini-2.5-flash",
             contents=normalized_history,
             config=config,

@@ -56,6 +56,10 @@ async def run_agent(
             history = [
                 *history,
                 {
+                    "role": "assistant",
+                    "tool_call": {"name": tc.name, "args": dict(tc.args)},
+                },
+                {
                     "role": "tool",
                     "content": json.dumps(result),
                     "name": tc.name,
