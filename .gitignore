@@ -5,3 +5,9 @@ CLAUDE.md
 .venv
 MIGRATION.md
 backend_v2/.env
+*.db
+backend/__pycache__
+*.pyc
+**/__pycache__/
+.DS_Store
+**/.DS_Store
