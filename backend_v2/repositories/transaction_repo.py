@@ -88,3 +88,11 @@ class TransactionRepository:
             .limit(limit)
         )
         return list(result.scalars().all())
+
+    async def bulk_create(
+        self, session: AsyncSession, transactions: list[TransactionCreate]
+    ) -> int:
+        rows = [Transaction(**t.model_dump()) for t in transactions]
+        session.add_all(rows)
+        await session.commit()
+        return len(rows)

@@ -53,6 +53,11 @@ class TransactionService:
         rows = await _repo.get_recent(session, user_id, limit)
         return [TransactionResponse.model_validate(r) for r in rows]
 
+    async def bulk_create(
+        self, session: AsyncSession, transactions: list[TransactionCreate]
+    ) -> int:
+        return await _repo.bulk_create(session, transactions)
+
     async def get_category_trend(
         self, session: AsyncSession, user_id: str, category: str
     ) -> list[dict]:
