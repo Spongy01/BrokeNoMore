@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Form, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from schemas import TransactionCreate, TransactionResponse
 from services.transaction_service import TransactionService
+from services.csv_service import parse_csv
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
 _service = TransactionService()
@@ -26,6 +27,17 @@ async def list_transactions(
 
 
 @router.post("/upload-csv")
-async def upload_csv():
-    # TODO: Phase 6 — implement CSV parsing and bulk insert
-    return {"message": "CSV upload coming in Phase 6"}
+async def upload_csv(
+    file: UploadFile,
+    user_id: str = Form(...),
+    source: str = Form(...),
+    session: AsyncSession = Depends(get_db),
+):
+    content = await file.read()
+    transactions, skipped = await parse_csv(content, user_id, source)
+    imported = await _service.bulk_create(session, transactions)
+    return {
+        "imported": imported,
+        "skipped": len(skipped),
+        "skipped_transactions": skipped,
+    }
