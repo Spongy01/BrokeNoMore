@@ -8,6 +8,7 @@ from tools import (
     get_monthly_summary,
     get_recent_transactions,
     get_spending_by_category,
+    get_spending_by_source,
     get_top_merchants,
 )
 
@@ -24,6 +25,7 @@ TOOL_REGISTRY = {
     "get_top_merchants": get_top_merchants,
     "get_recent_transactions": get_recent_transactions,
     "get_category_trend": get_category_trend,
+    "get_spending_by_source": get_spending_by_source,
 }
 
 _FALLBACK = (

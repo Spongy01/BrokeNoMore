@@ -1,7 +1,7 @@
 from decimal import Decimal
 from typing import Any
 
-from sqlalchemy import select, func, extract
+from sqlalchemy import select, func, extract, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import Transaction
@@ -88,6 +88,29 @@ class TransactionRepository:
             .limit(limit)
         )
         return list(result.scalars().all())
+
+    async def get_category_trend(
+        self, session: AsyncSession, user_id: str, category: str
+    ) -> list[dict[str, Any]]:
+        month_col = func.strftime("%Y-%m", Transaction.date).label("month")
+        result = await session.execute(
+            select(month_col, func.sum(Transaction.amount).label("total"))
+            .where(Transaction.user_id == user_id, Transaction.category == category)
+            .group_by(text("month"))
+            .order_by(text("month"))
+        )
+        return [{"month": row.month, "total": Decimal(str(row.total))} for row in result]
+
+    async def get_spending_by_source(
+        self, session: AsyncSession, user_id: str
+    ) -> list[dict[str, Any]]:
+        result = await session.execute(
+            select(Transaction.source, func.sum(Transaction.amount).label("total"))
+            .where(Transaction.user_id == user_id)
+            .group_by(Transaction.source)
+            .order_by(func.sum(Transaction.amount).desc())
+        )
+        return [{"source": row.source, "total": Decimal(str(row.total))} for row in result]
 
     async def bulk_create(
         self, session: AsyncSession, transactions: list[TransactionCreate]

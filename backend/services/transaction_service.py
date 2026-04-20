@@ -1,5 +1,3 @@
-from collections import defaultdict
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from repositories.transaction_repo import TransactionRepository
@@ -53,6 +51,11 @@ class TransactionService:
         rows = await _repo.get_recent(session, user_id, limit)
         return [TransactionResponse.model_validate(r) for r in rows]
 
+    async def get_spending_by_source(
+        self, session: AsyncSession, user_id: str
+    ) -> list[dict]:
+        return await _repo.get_spending_by_source(session, user_id)
+
     async def bulk_create(
         self, session: AsyncSession, transactions: list[TransactionCreate]
     ) -> int:
@@ -61,12 +64,4 @@ class TransactionService:
     async def get_category_trend(
         self, session: AsyncSession, user_id: str, category: str
     ) -> list[dict]:
-        rows = await _repo.get_by_category(session, user_id, category)
-        monthly: dict[str, float] = defaultdict(float)
-        for row in rows:
-            key = row.date.strftime("%Y-%m")
-            monthly[key] += float(row.amount)
-        return [
-            {"month": month, "total": total}
-            for month, total in sorted(monthly.items())
-        ]
+        return await _repo.get_category_trend(session, user_id, category)

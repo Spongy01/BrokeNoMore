@@ -11,6 +11,7 @@ class GeminiProvider(BaseLLMProvider):
 
     def __init__(self) -> None:
         self._client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+        self._model = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
     def normalize_history(self, history: list[dict]) -> list[t.Content]:
         normalized = []
@@ -78,7 +79,7 @@ class GeminiProvider(BaseLLMProvider):
         )
 
         response = await self._client.aio.models.generate_content(
-            model="gemini-2.5-flash",
+            model=self._model,
             contents=normalized_history,
             config=config,
         )

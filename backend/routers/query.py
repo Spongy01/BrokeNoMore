@@ -11,7 +11,7 @@ async def query(data: QueryRequest) -> QueryResponse:
     text, updated_history = await run_agent(
         user_id=data.user_id,
         message=data.message,
-        history=data.history,
+        history=[m.model_dump(exclude_none=True) for m in data.history],
     )
     clean_history = [m for m in updated_history if m["role"] != "tool"]
     return QueryResponse(response=text, history=clean_history)

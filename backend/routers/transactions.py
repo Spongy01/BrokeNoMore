@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Form, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
-from schemas import TransactionCreate, TransactionResponse
+from schemas import CsvUploadResponse, TransactionCreate, TransactionResponse
 from services.transaction_service import TransactionService
 from services.csv_service import parse_csv
 
@@ -26,7 +26,7 @@ async def list_transactions(
     return await _service.get_transactions(session, user_id)
 
 
-@router.post("/upload-csv")
+@router.post("/upload-csv", response_model=CsvUploadResponse, status_code=200)
 async def upload_csv(
     file: UploadFile,
     user_id: str = Form(...),

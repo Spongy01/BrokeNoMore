@@ -52,6 +52,17 @@ async def get_recent_transactions(user_id: str, limit: int = 10) -> dict:
     }
 
 
+async def get_spending_by_source(user_id: str) -> dict:
+    async with async_session_maker() as session:
+        rows = await _service.get_spending_by_source(session, user_id)
+    return {
+        "by_source": [
+            {"source": r["source"], "total": _to_float(r["total"])}
+            for r in rows
+        ]
+    }
+
+
 async def get_category_trend(user_id: str, category: str) -> dict:
     async with async_session_maker() as session:
         monthly = await _service.get_category_trend(session, user_id, category)
@@ -137,6 +148,15 @@ TOOL_DEFINITIONS = [
                 },
             },
             "required": ["user_id"],
+        },
+    },
+    {
+        "name": "get_spending_by_source",
+        "description": "Returns total spending grouped by bank account or card source (e.g. Chase Checking, Discover Credit)",
+        "parameters": {
+            "type": "object",
+            "properties": {},
+            "required": [],
         },
     },
     {
