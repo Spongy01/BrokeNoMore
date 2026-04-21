@@ -1,0 +1,388 @@
+{
+  "total": 30,
+  "passed": 11,
+  "failed": 19,
+  "tool_accuracy": 73.3,
+  "answer_accuracy": 36.7,
+  "overall_accuracy": 36.7,
+  "failures": [
+    {
+      "id": 5,
+      "question": "What are my total bills?"
+    },
+    {
+      "id": 6,
+      "question": "Give me a summary of February"
+    },
+    {
+      "id": 7,
+      "question": "How did I do in March financially?"
+    },
+    {
+      "id": 8,
+      "question": "What was my April spending?"
+    },
+    {
+      "id": 9,
+      "question": "Did I spend more in February or March?"
+    },
+    {
+      "id": 10,
+      "question": "What was my net for March?"
+    },
+    {
+      "id": 12,
+      "question": "Where do I spend the most?"
+    },
+    {
+      "id": 13,
+      "question": "What are my top 3 spending places?"
+    },
+    {
+      "id": 14,
+      "question": "How much have I spent at Amazon?"
+    },
+    {
+      "id": 17,
+      "question": "What did I spend money on lately?"
+    },
+    {
+      "id": 20,
+      "question": "What was my most recent purchase?"
+    },
+    {
+      "id": 21,
+      "question": "How has my food spending changed over time?"
+    },
+    {
+      "id": 22,
+      "question": "Show me my entertainment trend"
+    },
+    {
+      "id": 23,
+      "question": "Is my shopping increasing?"
+    },
+    {
+      "id": 24,
+      "question": "How did my food spending vary by month?"
+    },
+    {
+      "id": 25,
+      "question": "Trend for transportation spending"
+    },
+    {
+      "id": 27,
+      "question": "What did I put on my Discover card?"
+    },
+    {
+      "id": 29,
+      "question": "Compare my Chase and Discover spending"
+    },
+    {
+      "id": 30,
+      "question": "How much total across all my accounts?"
+    }
+  ],
+  "results": [
+    {
+      "id": 1,
+      "question": "How much did I spend on food?",
+      "expected_tool": "get_spending_by_category",
+      "tool_used": "get_spending_by_category",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "You spent $153 on Food & Dining.",
+      "passed": true
+    },
+    {
+      "id": 2,
+      "question": "What did I spend on entertainment?",
+      "expected_tool": "get_spending_by_category",
+      "tool_used": "get_spending_by_category",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "You spent $84.97 on entertainment.",
+      "passed": true
+    },
+    {
+      "id": 3,
+      "question": "Show me my shopping expenses",
+      "expected_tool": "get_spending_by_category",
+      "tool_used": "get_spending_by_category",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "You spent $380 on Shopping. Is there any other category you would like to know about?",
+      "passed": true
+    },
+    {
+      "id": 4,
+      "question": "How much went to transportation?",
+      "expected_tool": "get_spending_by_category",
+      "tool_used": "get_spending_by_category",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "$125 was spent on transportation. \n",
+      "passed": true
+    },
+    {
+      "id": 5,
+      "question": "What are my total bills?",
+      "expected_tool": "get_spending_by_category",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can help you see your spending by category, but \"bills\" can cover a lot of different things like utilities, rent, or loan payments. Could you tell me which categories you'd like to include in \"total bills\"? This way, I can give you the most accurate information.",
+      "passed": false
+    },
+    {
+      "id": 6,
+      "question": "Give me a summary of February",
+      "expected_tool": "get_monthly_summary",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can do that for you! What is your user ID, and for which year would you like the February summary?",
+      "passed": false
+    },
+    {
+      "id": 7,
+      "question": "How did I do in March financially?",
+      "expected_tool": "get_monthly_summary",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can help with that! To give you an accurate summary for March, I'll need your user ID. Could you please provide it? Also, just to confirm, are you asking about March of this year?",
+      "passed": false
+    },
+    {
+      "id": 8,
+      "question": "What was my April spending?",
+      "expected_tool": "get_monthly_summary",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can help with that! To get your April spending, I need to know which year you're interested in. Could you please specify the year?",
+      "passed": false
+    },
+    {
+      "id": 9,
+      "question": "Did I spend more in February or March?",
+      "expected_tool": "get_monthly_summary",
+      "tool_used": "get_monthly_summary",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "I don't have any spending data for February or March to compare. Would you like me to check other months?",
+      "passed": false
+    },
+    {
+      "id": 10,
+      "question": "What was my net for March?",
+      "expected_tool": "get_monthly_summary",
+      "tool_used": "get_monthly_summary",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "Your net for March was 0.",
+      "passed": false
+    },
+    {
+      "id": 11,
+      "question": "Who are my top merchants?",
+      "expected_tool": "get_top_merchants",
+      "tool_used": "get_top_merchants",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "Your top merchants are:\n\n1. Payroll: $4000\n2. Transfer: $500\n3. Amazon: $300\n4. Uber: $125\n5. Verizon: $120",
+      "passed": true
+    },
+    {
+      "id": 12,
+      "question": "Where do I spend the most?",
+      "expected_tool": "get_top_merchants",
+      "tool_used": "get_spending_by_category",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "It looks like you spend the most in the \"Other\" category, with a total of $4500. After that, your highest spending is in \"Shopping\" ($380) and \"Food & Dining\" ($153).",
+      "passed": false
+    },
+    {
+      "id": 13,
+      "question": "What are my top 3 spending places?",
+      "expected_tool": "get_top_merchants",
+      "tool_used": "get_top_merchants",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "Your top 3 spending places are Payroll ($4000), Transfer ($500), and Amazon ($300).",
+      "passed": false
+    },
+    {
+      "id": 14,
+      "question": "How much have I spent at Amazon?",
+      "expected_tool": "get_top_merchants",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can only show you your top merchants by spend, not the total spend for a specific merchant.",
+      "passed": false
+    },
+    {
+      "id": 15,
+      "question": "Which merchant takes most of my money?",
+      "expected_tool": "get_top_merchants",
+      "tool_used": "get_top_merchants",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "The merchant that takes most of your money is Payroll, with a total of $4000. After that it would be Transfer, Amazon, Uber, and Verizon.",
+      "passed": true
+    },
+    {
+      "id": 16,
+      "question": "Show me my recent transactions",
+      "expected_tool": "get_recent_transactions",
+      "tool_used": "get_recent_transactions",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "Here are your 10 most recent transactions:\n\n*   **2026-04-25**: Transfer of $500.00 in \"Other\" from Discover Credit (Credit)\n*   **2026-04-20**: Steam for $30.00 in \"Entertainment\" from Discover Credit (Debit)\n*   **2026-04-18**: Walmart for $45.00 in \"Shopping\" from Discover Credit (Debit)\n*   **2026-04-15**: Dunkin for $15.00 in \"Food & Dining\" from Discover Credit (Debit)\n*   **2026-04-12**: CVS for $50.00 in \"Health & Medical\" from Discover Credit (Debit)\n*   **2026-04-10**: Chipotle for $20.00 in \"Food & Dining\" from Discover Credit (Debit)\n*   **2026-04-08**: Uber for $25.00 in \"Transportation\" from Discover Credit (Debit)\n*   **2026-04-05**: Netflix for $14.99 in \"Entertainment\" from Discover Credit (Debit)\n*   **2026-04-03**: Walmart for $35.00 in \"Shopping\" from Discover Credit (Debit)\n*   **2026-04-01**: Aldi for $8.50 in \"Food & Dining\" from Discover Credit (Debit)",
+      "passed": true
+    },
+    {
+      "id": 17,
+      "question": "What did I spend money on lately?",
+      "expected_tool": "get_recent_transactions",
+      "tool_used": "get_recent_transactions",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "Here are your ten most recent transactions:\nOn 04-20, you spent 30.00 on Steam (Entertainment).\nOn 04-18, you spent 45.00 on Walmart (Shopping).\nOn 04-15, you spent 15.00 on Dunkin (Food & Dining).\nOn 04-12, you spent 50.00 on CVS (Health & Medical).\nOn 04-10, you spent 20.00 on Chipotle (Food & Dining).\nOn 04-08, you spent 25.00 on Uber (Transportation).\nOn 04-05, you spent 14.99 on Netflix (Entertainment).\nOn 04-03, you spent 35.00 on Walmart (Shopping).\nOn 04-01, you spent 8.50 on Aldi (Food & Dining).",
+      "passed": false
+    },
+    {
+      "id": 18,
+      "question": "What are my last 5 transactions?",
+      "expected_tool": "get_recent_transactions",
+      "tool_used": "get_recent_transactions",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "Here are your last 5 transactions:\n\n*   **Transfer** for 500.00 in category Other on 2026-04-25\n*   **Steam** for 30.00 in category Entertainment on 2026-04-20\n*   **Walmart** for 45.00 in category Shopping on 2026-04-18\n*   **Dunkin** for 15.00 in category Food & Dining on 2026-04-15\n*   **CVS** for 50.00 in category Health & Medical on 2026-04-12",
+      "passed": true
+    },
+    {
+      "id": 19,
+      "question": "Show me what I bought recently",
+      "expected_tool": "get_recent_transactions",
+      "tool_used": "get_recent_transactions",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "Here are your 10 most recent transactions:\n\n*   **Transfer** of $500.00 on 2026-04-25 from Discover Credit (Category: Other)\n*   **Steam** of $30.00 on 2026-04-20 from Discover Credit (Category: Entertainment)\n*   **Walmart** of $45.00 on 2026-04-18 from Discover Credit (Category: Shopping)\n*   **Dunkin** of $15.00 on 2026-04-15 from Discover Credit (Category: Food & Dining)\n*   **CVS** of $50.00 on 2026-04-12 from Discover Credit (Category: Health & Medical)\n*   **Chipotle** of $20.00 on 2026-04-10 from Discover Credit (Category: Food & Dining)\n*   **Uber** of $25.00 on 2026-04-08 from Discover Credit (Category: Transportation)\n*   **Netflix** of $14.99 on 2026-04-05 from Discover Credit (Category: Entertainment)\n*   **Walmart** of $35.00 on 2026-04-03 from Discover Credit (Category: Shopping)\n*   **Aldi** of $8.50 on 2026-04-01 from Discover Credit (Category: Food & Dining)",
+      "passed": true
+    },
+    {
+      "id": 20,
+      "question": "What was my most recent purchase?",
+      "expected_tool": "get_recent_transactions",
+      "tool_used": "get_recent_transactions",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "Your most recent transaction was a credit of $500.00 to your Discover Credit on 2026-04-25, described as \"Transfer\".",
+      "passed": false
+    },
+    {
+      "id": 21,
+      "question": "How has my food spending changed over time?",
+      "expected_tool": "get_category_trend",
+      "tool_used": "get_category_trend",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "It looks like I don't have enough information to show you your food spending trends over time. This could be because there's no spending in the 'food' category yet, or perhaps the data isn't fully categorized.",
+      "passed": false
+    },
+    {
+      "id": 22,
+      "question": "Show me my entertainment trend",
+      "expected_tool": "get_category_trend",
+      "tool_used": "get_category_trend",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "It looks like you don't have any entertainment spending in your records. Would you like to see trends for another category?",
+      "passed": false
+    },
+    {
+      "id": 23,
+      "question": "Is my shopping increasing?",
+      "expected_tool": "get_category_trend",
+      "tool_used": "get_category_trend",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "I don't seem to have enough information to tell you if your shopping is increasing. The category trend for \"shopping\" is empty.\n\nCould you provide more information or perhaps a different category to analyze?",
+      "passed": false
+    },
+    {
+      "id": 24,
+      "question": "How did my food spending vary by month?",
+      "expected_tool": "get_category_trend",
+      "tool_used": "get_category_trend",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "I don't have enough information to show you how your food spending varied by month. Please make sure that your transactions are categorized, and try again.",
+      "passed": false
+    },
+    {
+      "id": 25,
+      "question": "Trend for transportation spending",
+      "expected_tool": "get_category_trend",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "I can get the trend for transportation spending, but I need your user ID first. Could you please provide it?",
+      "passed": false
+    },
+    {
+      "id": 26,
+      "question": "How much did I spend on my Chase account?",
+      "expected_tool": "get_spending_by_source",
+      "tool_used": "get_spending_by_source",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "You spent $4669.48 on your Chase Checking account.",
+      "passed": true
+    },
+    {
+      "id": 27,
+      "question": "What did I put on my Discover card?",
+      "expected_tool": "get_spending_by_source",
+      "tool_used": "get_spending_by_source",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "You spent $743.49 on your Discover card.",
+      "passed": false
+    },
+    {
+      "id": 28,
+      "question": "Which card did I spend more on?",
+      "expected_tool": "get_spending_by_source",
+      "tool_used": "get_spending_by_source",
+      "tool_correct": true,
+      "answer_correct": true,
+      "response": "You spent more on Chase Checking, with a total of $4669.48. Discover Credit had a total of $743.49.",
+      "passed": true
+    },
+    {
+      "id": 29,
+      "question": "Compare my Chase and Discover spending",
+      "expected_tool": "get_spending_by_source",
+      "tool_used": "get_spending_by_source",
+      "tool_correct": true,
+      "answer_correct": false,
+      "response": "You've spent $4669.48 with Chase Checking and $743.49 with Discover Credit.",
+      "passed": false
+    },
+    {
+      "id": 30,
+      "question": "How much total across all my accounts?",
+      "expected_tool": "get_spending_by_source",
+      "tool_used": "none",
+      "tool_correct": false,
+      "answer_correct": false,
+      "response": "Do you want to know your total spending across all accounts or your current balance across all accounts?",
+      "passed": false
+    }
+  ]
+}

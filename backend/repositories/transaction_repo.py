@@ -40,7 +40,7 @@ class TransactionRepository:
     ) -> list[dict[str, Any]]:
         result = await session.execute(
             select(Transaction.category, func.sum(Transaction.amount).label("total"))
-            .where(Transaction.user_id == user_id)
+            .where(Transaction.user_id == user_id, Transaction.transaction_type == "debit")
             .group_by(Transaction.category)
             .order_by(func.sum(Transaction.amount).desc())
         )
@@ -71,7 +71,7 @@ class TransactionRepository:
     ) -> list[dict[str, Any]]:
         result = await session.execute(
             select(Transaction.description, func.sum(Transaction.amount).label("total"))
-            .where(Transaction.user_id == user_id)
+            .where(Transaction.user_id == user_id, Transaction.transaction_type == "debit")
             .group_by(Transaction.description)
             .order_by(func.sum(Transaction.amount).desc())
             .limit(limit)
@@ -95,7 +95,10 @@ class TransactionRepository:
         month_col = func.strftime("%Y-%m", Transaction.date).label("month")
         result = await session.execute(
             select(month_col, func.sum(Transaction.amount).label("total"))
-            .where(Transaction.user_id == user_id, Transaction.category == category)
+            .where(
+                Transaction.user_id == user_id,
+                func.lower(Transaction.category) == func.lower(category),
+            )
             .group_by(text("month"))
             .order_by(text("month"))
         )
@@ -106,7 +109,7 @@ class TransactionRepository:
     ) -> list[dict[str, Any]]:
         result = await session.execute(
             select(Transaction.source, func.sum(Transaction.amount).label("total"))
-            .where(Transaction.user_id == user_id)
+            .where(Transaction.user_id == user_id, Transaction.transaction_type == "debit")
             .group_by(Transaction.source)
             .order_by(func.sum(Transaction.amount).desc())
         )

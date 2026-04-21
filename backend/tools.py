@@ -83,13 +83,8 @@ TOOL_DEFINITIONS = [
         "description": "Returns total spending grouped by category for a user.",
         "parameters": {
             "type": "object",
-            "properties": {
-                "user_id": {
-                    "type": "string",
-                    "description": "The user's unique identifier.",
-                },
-            },
-            "required": ["user_id"],
+            "properties": {},
+            "required": [],
         },
     },
     {
@@ -98,20 +93,16 @@ TOOL_DEFINITIONS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "user_id": {
-                    "type": "string",
-                    "description": "The user's unique identifier.",
-                },
                 "year": {
                     "type": "integer",
-                    "description": "The calendar year (e.g. 2024).",
+                    "description": "The calendar year (e.g. 2026).",
                 },
                 "month": {
                     "type": "integer",
                     "description": "The calendar month as a number 1–12.",
                 },
             },
-            "required": ["user_id", "year", "month"],
+            "required": ["year", "month"],
         },
     },
     {
@@ -120,16 +111,12 @@ TOOL_DEFINITIONS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "user_id": {
-                    "type": "string",
-                    "description": "The user's unique identifier.",
-                },
                 "limit": {
                     "type": "integer",
                     "description": "Maximum number of merchants to return (default 5).",
                 },
             },
-            "required": ["user_id"],
+            "required": [],
         },
     },
     {
@@ -138,16 +125,12 @@ TOOL_DEFINITIONS = [
         "parameters": {
             "type": "object",
             "properties": {
-                "user_id": {
-                    "type": "string",
-                    "description": "The user's unique identifier.",
-                },
                 "limit": {
                     "type": "integer",
                     "description": "Maximum number of transactions to return (default 10).",
                 },
             },
-            "required": ["user_id"],
+            "required": [],
         },
     },
     {
@@ -161,20 +144,25 @@ TOOL_DEFINITIONS = [
     },
     {
         "name": "get_category_trend",
-        "description": "Returns monthly spend totals for a specific category to show spending trends over time.",
+        "description": (
+            "Returns monthly spend totals for a specific category to show spending trends over time. "
+            "The category must be one of the following exact values: "
+            "Food & Dining, Transportation, Shopping, Entertainment, "
+            "Bills & Utilities, Health & Medical, Travel, Education, Other."
+        ),
         "parameters": {
             "type": "object",
             "properties": {
-                "user_id": {
-                    "type": "string",
-                    "description": "The user's unique identifier.",
-                },
                 "category": {
                     "type": "string",
-                    "description": "The spending category to analyse (e.g. 'food', 'transport').",
+                    "description": (
+                        "The spending category to analyse. Must be one of: "
+                        "Food & Dining, Transportation, Shopping, Entertainment, "
+                        "Bills & Utilities, Health & Medical, Travel, Education, Other."
+                    ),
                 },
             },
-            "required": ["user_id", "category"],
+            "required": ["category"],
         },
     },
 ]

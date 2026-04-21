@@ -1,5 +1,7 @@
 import json
 
+from langfuse import Langfuse
+
 from llm.base import BaseLLMProvider
 from llm.gemini import GeminiProvider
 from tools import (
@@ -12,11 +14,16 @@ from tools import (
     get_top_merchants,
 )
 
+langfuse = Langfuse()
+
 SYSTEM_PROMPT = (
     "You are a personal finance assistant. You have access to tools that query "
     "the user's real transaction data. Use tools whenever the question relates to "
     "the user's actual spending, transactions, categories, or financial history. "
-    "Respond conversationally and helpfully."
+    "Respond conversationally and helpfully. "
+    "All transaction data is from 2026. "
+    "Never ask the user for their user ID — it is handled automatically. "
+    "Always call a tool before answering any financial question; never answer from memory."
 )
 
 TOOL_REGISTRY = {
@@ -43,33 +50,67 @@ async def run_agent(
         provider = GeminiProvider()
 
     history = [*history, {"role": "user", "content": message}]
+    total_tool_calls = 0
 
-    for _ in range(5):
-        response = await provider.chat(history, TOOL_DEFINITIONS, SYSTEM_PROMPT)
+    with langfuse.start_as_current_observation(
+        name="run_agent",
+        as_type="agent",
+        input={"user_id": user_id, "message": message},
+        metadata={"history_length": len(history)},
+    ) as trace:
+        for i in range(5):
+            with trace.start_as_current_observation(
+                name=f"iteration_{i}",
+                as_type="span",
+                input={"history_length": len(history)},
+            ) as span:
+                response = await provider.chat(history, TOOL_DEFINITIONS, SYSTEM_PROMPT)
 
-        if response.tool_call is not None:
-            tc = response.tool_call
-            fn = TOOL_REGISTRY[tc.name]
+                if response.tool_call is not None:
+                    tc = response.tool_call
+                    fn = TOOL_REGISTRY[tc.name]
 
-            # Always use server-side user_id — never trust what Gemini sends
-            args = {k: v for k, v in tc.args.items() if k != "user_id"}
-            result = await fn(user_id, **args)
+                    # Always use server-side user_id — never trust what Gemini sends
+                    final_args = {k: v for k, v in tc.args.items() if k != "user_id"}
 
-            history = [
-                *history,
-                {
-                    "role": "assistant",
-                    "tool_call": {"name": tc.name, "args": dict(tc.args)},
-                },
-                {
-                    "role": "tool",
-                    "content": json.dumps(result),
-                    "name": tc.name,
-                },
-            ]
+                    with span.start_as_current_observation(
+                        name=f"tool_call_{tc.name}",
+                        as_type="tool",
+                        input={"tool": tc.name, "args": final_args},
+                    ) as tool_span:
+                        result = await fn(user_id, **final_args)
+                        total_tool_calls += 1
+                        tool_span.update(output=result)
 
-        elif response.text is not None:
-            history = [*history, {"role": "assistant", "content": response.text}]
-            return response.text, history
+                    history = [
+                        *history,
+                        {
+                            "role": "assistant",
+                            "tool_call": {"name": tc.name, "args": dict(tc.args)},
+                        },
+                        {
+                            "role": "tool",
+                            "content": json.dumps(result),
+                            "name": tc.name,
+                        },
+                    ]
+                    span.update(output={"tool_called": tc.name})
 
+                elif response.text is not None:
+                    history = [*history, {"role": "assistant", "content": response.text}]
+                    span.update(output={"response": response.text})
+
+                    trace.update(
+                        output={"response": response.text},
+                        metadata={"iterations": i + 1, "total_tool_calls": total_tool_calls},
+                    )
+                    langfuse.flush()
+                    return response.text, history
+
+        trace.update(
+            output={"response": _FALLBACK},
+            metadata={"iterations": 5, "total_tool_calls": total_tool_calls},
+        )
+
+    langfuse.flush()
     return _FALLBACK, history
