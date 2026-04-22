@@ -6,6 +6,7 @@ from llm.base import BaseLLMProvider
 from llm.gemini import GeminiProvider
 from tools import (
     TOOL_DEFINITIONS,
+    execute_custom_sql,
     get_category_trend,
     get_monthly_summary,
     get_recent_transactions,
@@ -23,7 +24,11 @@ SYSTEM_PROMPT = (
     "Respond conversationally and helpfully. "
     "All transaction data is from 2026. "
     "Never ask the user for their user ID — it is handled automatically. "
-    "Always call a tool before answering any financial question; never answer from memory."
+    "Always call a tool before answering any financial question; never answer from memory. "
+    "Prefer the specific tools (get_spending_by_category, get_monthly_summary, "
+    "get_top_merchants, get_recent_transactions, get_category_trend, get_spending_by_source) "
+    "whenever they can answer the question. Only use execute_custom_sql for questions "
+    "that require custom filtering or grouping not covered by the other tools."
 )
 
 TOOL_REGISTRY = {
@@ -33,6 +38,7 @@ TOOL_REGISTRY = {
     "get_recent_transactions": get_recent_transactions,
     "get_category_trend": get_category_trend,
     "get_spending_by_source": get_spending_by_source,
+    "execute_custom_sql": execute_custom_sql,
 }
 
 _FALLBACK = (
