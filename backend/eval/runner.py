@@ -2,6 +2,7 @@ import asyncio
 import json
 from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 from dotenv import load_dotenv
 
@@ -11,8 +12,6 @@ from eval.fixtures import setup_eval_db, teardown_eval_db, test_engine, test_ses
 from eval.questions import QUESTIONS
 
 # Monkeypatch before anything that touches the DB executes tool calls.
-# tools.py captures async_session_maker at import time via `from database import ...`,
-# so we patch both the database module and the tools module's local reference.
 import database
 database.engine = test_engine
 database.async_session_maker = test_session_maker
@@ -20,30 +19,40 @@ database.async_session_maker = test_session_maker
 import tools
 tools.async_session_maker = test_session_maker
 
-from services.agent_service import run_agent  # noqa: E402 (must come after patch)
-from llm.gemini import GeminiProvider
+from langchain_core.messages import AIMessage
+from services.agent_service import run_agent, _get_graph  # noqa: E402
 
 
 async def run_eval() -> dict:
     await setup_eval_db()
 
-    provider = GeminiProvider()
+    # Ensure a fresh graph is built against the patched session maker
+    import services.agent_service as svc
+    svc._graph = None
+
     results = []
 
     for question in QUESTIONS:
         qid = question["id"]
         try:
-            response, history = await run_agent(
+            thread_id = str(uuid4())
+            response, _ = await run_agent(
                 user_id="eval_user",
                 message=question["question"],
-                history=[],
-                provider=provider,
+                thread_id=thread_id,
             )
 
+            # Retrieve full message history from checkpointer to find tool calls
+            graph = await _get_graph()
+            state = await graph.aget_state(
+                config={"configurable": {"thread_id": thread_id}}
+            )
+            messages = state.values.get("messages", [])
+
             tool_used = None
-            for msg in history:
-                if msg.get("role") == "assistant" and msg.get("tool_call") is not None:
-                    tool_used = msg["tool_call"]["name"]
+            for msg in messages:
+                if isinstance(msg, AIMessage) and msg.tool_calls:
+                    tool_used = msg.tool_calls[0]["name"]
                     break
 
             tool_correct = tool_used == question["expected_tool"]

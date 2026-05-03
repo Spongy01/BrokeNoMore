@@ -84,11 +84,20 @@ class GeminiProvider(BaseLLMProvider):
             config=config,
         )
 
+        usage = {}
+        if response.usage_metadata:
+            usage = {
+                "prompt_tokens": response.usage_metadata.prompt_token_count or 0,
+                "completion_tokens": response.usage_metadata.candidates_token_count or 0,
+                "total_tokens": response.usage_metadata.total_token_count or 0,
+            }
+
         if response.function_calls:
             fc = response.function_calls[0]
             return LLMResponse(
                 text=None,
                 tool_call=ToolCall(name=fc.name, args=dict(fc.args)),
+                usage=usage,
             )
 
-        return LLMResponse(text=response.text, tool_call=None)
+        return LLMResponse(text=response.text, tool_call=None, usage=usage)

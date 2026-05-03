@@ -11,6 +11,7 @@ class ToolCall:
 class LLMResponse:
     text: str | None
     tool_call: ToolCall | None
+    usage: dict = field(default_factory=dict)
 
 
 class BaseLLMProvider:

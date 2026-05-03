@@ -1,8 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Annotated, Literal, Union
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 
 
 class TransactionCreate(BaseModel):
@@ -29,34 +28,6 @@ class TransactionResponse(TransactionCreate):
     created_at: datetime
 
 
-class UserMessage(BaseModel):
-    role: Literal["user"]
-    content: str
-
-
-class ToolCallDetail(BaseModel):
-    name: str
-    args: dict
-
-
-class AssistantMessage(BaseModel):
-    role: Literal["assistant"]
-    content: str | None = None
-    tool_call: ToolCallDetail | None = None
-
-
-class ToolResultMessage(BaseModel):
-    role: Literal["tool"]
-    content: str
-    name: str
-
-
-HistoryMessage = Annotated[
-    Union[UserMessage, AssistantMessage, ToolResultMessage],
-    Field(discriminator="role"),
-]
-
-
 class CsvUploadResponse(BaseModel):
     imported: int
     skipped: int
@@ -66,9 +37,9 @@ class CsvUploadResponse(BaseModel):
 class QueryRequest(BaseModel):
     user_id: str
     message: str
-    history: list[HistoryMessage] = []
+    thread_id: str | None = None  # None starts a new conversation
 
 
 class QueryResponse(BaseModel):
     response: str
-    history: list[HistoryMessage]
+    thread_id: str

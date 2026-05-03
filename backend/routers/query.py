@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from fastapi import APIRouter
 
 from schemas import QueryRequest, QueryResponse
@@ -8,10 +10,10 @@ router = APIRouter(prefix="/query", tags=["query"])
 
 @router.post("", response_model=QueryResponse)
 async def query(data: QueryRequest) -> QueryResponse:
-    text, updated_history = await run_agent(
+    thread_id = data.thread_id or str(uuid4())
+    text, thread_id = await run_agent(
         user_id=data.user_id,
         message=data.message,
-        history=[m.model_dump(exclude_none=True) for m in data.history],
+        thread_id=thread_id,
     )
-    clean_history = [m for m in updated_history if m["role"] != "tool"]
-    return QueryResponse(response=text, history=clean_history)
+    return QueryResponse(response=text, thread_id=thread_id)
