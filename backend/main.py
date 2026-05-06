@@ -7,8 +7,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import init_db
-from models import Transaction  # noqa: F401 — ensures metadata includes Transaction table
+from models import PasswordResetToken, Transaction, User, UserThread  # noqa: F401 — register all tables
 from routers import transactions, query
+from routers.auth import router as auth_router
 
 
 @asynccontextmanager
@@ -26,6 +27,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth_router)
 app.include_router(transactions.router)
 app.include_router(query.router)
 
