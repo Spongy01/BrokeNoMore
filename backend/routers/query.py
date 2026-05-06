@@ -11,7 +11,7 @@ router = APIRouter(prefix="/query", tags=["query"])
 @router.post("", response_model=QueryResponse)
 async def query(data: QueryRequest) -> QueryResponse:
     thread_id = data.thread_id or str(uuid4())
-    text, thread_id = await run_agent(
+    text, thread_id, _ = await run_agent(
         user_id=data.user_id,
         message=data.message,
         thread_id=thread_id,

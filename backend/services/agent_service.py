@@ -116,7 +116,7 @@ async def run_agent(
     user_id: str,
     message: str,
     thread_id: str,
-) -> tuple[str, str]:
+) -> tuple[str, str, str]:
     graph = await _get_graph()
 
     with _langfuse.start_as_current_observation(
@@ -124,6 +124,7 @@ async def run_agent(
         as_type="agent",
         input={"user_id": user_id, "message": message, "thread_id": thread_id},
     ) as trace:
+        captured_trace_id = trace.trace_id
         langfuse_handler = LangfuseCallbackHandler(
             trace_context=TraceContext(trace_id=trace.trace_id, parent_span_id=trace.id),
         )
@@ -151,4 +152,4 @@ async def run_agent(
         )
 
     _langfuse.flush()
-    return response_text, thread_id
+    return response_text, thread_id, captured_trace_id
